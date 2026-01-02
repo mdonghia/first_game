@@ -26,7 +26,7 @@ body {
     height: 320px;
     background-color: #333;
     position: relative;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
   }
   
   .player, .coin, .enemy, .obstacle {
@@ -128,8 +128,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    margin-top: 30px;
-    padding-bottom: 20px;
+    margin-bottom: 20px;
   }
 
   #horizontal-controls {
