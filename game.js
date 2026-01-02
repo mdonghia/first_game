@@ -210,10 +210,52 @@ function moveEnemies() {
   }
 
 
-  
+
   // Event listener for user input
   document.addEventListener('keydown', handleInput);
 
+  // Touch control buttons
+  function setupTouchControls() {
+    const btnUp = document.getElementById('btn-up');
+    const btnDown = document.getElementById('btn-down');
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+
+    if (btnUp) {
+      btnUp.addEventListener('click', () => handleInput({ key: 'ArrowUp' }));
+      btnUp.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleInput({ key: 'ArrowUp' });
+      });
+    }
+
+    if (btnDown) {
+      btnDown.addEventListener('click', () => handleInput({ key: 'ArrowDown' }));
+      btnDown.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleInput({ key: 'ArrowDown' });
+      });
+    }
+
+    if (btnLeft) {
+      btnLeft.addEventListener('click', () => handleInput({ key: 'ArrowLeft' }));
+      btnLeft.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleInput({ key: 'ArrowLeft' });
+      });
+    }
+
+    if (btnRight) {
+      btnRight.addEventListener('click', () => handleInput({ key: 'ArrowRight' }));
+      btnRight.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleInput({ key: 'ArrowRight' });
+      });
+    }
+  }
+
+  // Setup touch controls
+  setupTouchControls();
+
   // Start the game
   initGame();
-  
