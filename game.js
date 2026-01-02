@@ -294,36 +294,33 @@ function moveEnemies() {
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
 
-    if (btnUp) {
-      btnUp.addEventListener('click', () => handleInput({ key: 'ArrowUp' }));
-      btnUp.addEventListener('touchstart', (e) => {
+    // Helper function to handle button press
+    function handleButtonPress(direction) {
+      return function(e) {
         e.preventDefault();
-        handleInput({ key: 'ArrowUp' });
-      });
+        e.stopPropagation();
+        handleInput({ key: direction });
+      };
+    }
+
+    if (btnUp) {
+      btnUp.addEventListener('touchend', handleButtonPress('ArrowUp'), { passive: false });
+      btnUp.addEventListener('click', handleButtonPress('ArrowUp'));
     }
 
     if (btnDown) {
-      btnDown.addEventListener('click', () => handleInput({ key: 'ArrowDown' }));
-      btnDown.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleInput({ key: 'ArrowDown' });
-      });
+      btnDown.addEventListener('touchend', handleButtonPress('ArrowDown'), { passive: false });
+      btnDown.addEventListener('click', handleButtonPress('ArrowDown'));
     }
 
     if (btnLeft) {
-      btnLeft.addEventListener('click', () => handleInput({ key: 'ArrowLeft' }));
-      btnLeft.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleInput({ key: 'ArrowLeft' });
-      });
+      btnLeft.addEventListener('touchend', handleButtonPress('ArrowLeft'), { passive: false });
+      btnLeft.addEventListener('click', handleButtonPress('ArrowLeft'));
     }
 
     if (btnRight) {
-      btnRight.addEventListener('click', () => handleInput({ key: 'ArrowRight' }));
-      btnRight.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleInput({ key: 'ArrowRight' });
-      });
+      btnRight.addEventListener('touchend', handleButtonPress('ArrowRight'), { passive: false });
+      btnRight.addEventListener('click', handleButtonPress('ArrowRight'));
     }
   }
 
