@@ -95,6 +95,37 @@ function spawnEnemies() {
 
 function spawnObstacles() {
   // Spawn obstacles with random sizes and positions
+  const numObstacles = Math.min(3 + level, 8); // Increase obstacles with level, max 8
+
+  for (let i = 0; i < numObstacles; i++) {
+    const obstacle = document.createElement('div');
+    obstacle.className = 'obstacle';
+
+    // Random size between 30-60px
+    const width = 30 + Math.floor(Math.random() * 30);
+    const height = 30 + Math.floor(Math.random() * 30);
+    obstacle.style.width = `${width}px`;
+    obstacle.style.height = `${height}px`;
+
+    // Random position, avoiding center where player spawns
+    let x, y;
+    const playerCenterX = (gameBoard.clientWidth - 20) / 2;
+    const playerCenterY = (gameBoard.clientHeight - 20) / 2;
+
+    do {
+      x = Math.floor(Math.random() * (gameBoard.clientWidth - width));
+      y = Math.floor(Math.random() * (gameBoard.clientHeight - height));
+    } while (
+      // Avoid spawning too close to player start position (within 60px)
+      Math.abs(x - playerCenterX) < 60 && Math.abs(y - playerCenterY) < 60
+    );
+
+    obstacle.style.left = `${x}px`;
+    obstacle.style.top = `${y}px`;
+
+    obstacles.push(obstacle);
+    gameBoard.appendChild(obstacle);
+  }
 }
 
 function updateGame() {
@@ -161,23 +192,65 @@ function moveEnemies() {
   function handleInput(e) {
     // Process user input (arrow keys)
     const step = 20;
-  
+    const currentLeft = parseInt(player.style.left);
+    const currentTop = parseInt(player.style.top);
+    let newLeft = currentLeft;
+    let newTop = currentTop;
+
     switch (e.key) {
       case 'ArrowUp':
-        player.style.top = `${Math.max(parseInt(player.style.top) - step, 0)}px`;
+        newTop = Math.max(currentTop - step, 0);
         break;
       case 'ArrowDown':
-        player.style.top = `${Math.min(parseInt(player.style.top) + step, gameBoard.clientHeight - 20)}px`;
+        newTop = Math.min(currentTop + step, gameBoard.clientHeight - 20);
         break;
       case 'ArrowLeft':
-        player.style.left = `${Math.max(parseInt(player.style.left) - step, 0)}px`;
+        newLeft = Math.max(currentLeft - step, 0);
         break;
       case 'ArrowRight':
-        player.style.left = `${Math.min(parseInt(player.style.left) + step, gameBoard.clientWidth - 20)}px`;
+        newLeft = Math.min(currentLeft + step, gameBoard.clientWidth - 20);
         break;
       default:
         break;
     }
+
+    // Check if new position would collide with any obstacles
+    if (!wouldCollideWithObstacle(newLeft, newTop)) {
+      player.style.left = `${newLeft}px`;
+      player.style.top = `${newTop}px`;
+    }
+  }
+
+  function wouldCollideWithObstacle(newLeft, newTop) {
+    // Create temporary rect for player's new position
+    const playerRect = {
+      left: newLeft,
+      top: newTop,
+      right: newLeft + 20,
+      bottom: newTop + 20
+    };
+
+    // Check collision with each obstacle
+    for (const obstacle of obstacles) {
+      const obstacleRect = obstacle.getBoundingClientRect();
+      const gameRect = gameBoard.getBoundingClientRect();
+
+      const obsRect = {
+        left: parseInt(obstacle.style.left),
+        top: parseInt(obstacle.style.top),
+        right: parseInt(obstacle.style.left) + parseInt(obstacle.style.width),
+        bottom: parseInt(obstacle.style.top) + parseInt(obstacle.style.height)
+      };
+
+      // Check if rectangles overlap
+      if (!(playerRect.right <= obsRect.left ||
+            playerRect.left >= obsRect.right ||
+            playerRect.bottom <= obsRect.top ||
+            playerRect.top >= obsRect.bottom)) {
+        return true; // Collision detected
+      }
+    }
+    return false; // No collision
   }
   
   function advanceLevel() {
